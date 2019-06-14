@@ -1,0 +1,44 @@
+<app-social-header></app-social-header>
+<div class="container-fluid">
+        <div class="row">
+            <div class="col-12 mt-2" *ngIf="news">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa fa-align-justify"></i> Nyhed Deatajler
+                    </div>
+                    <div class="card-body" style="cursor: pointer">
+                        <div class="row mt-2" *ngIf="news.images.length > 0">
+                            <div class="col-12">
+                                <carousel id="viewCrousel" [interval]="2000">
+                                    <slide *ngFor="let slide of slides; let index=index">
+                                        <img [src]="slide.image" alt="image slide" style="display: block; width: 100%;">
+                                    </slide>
+                                </carousel>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-12">
+                                <h5>{{news.headline}}</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                                <div class="col-12">
+                                    <span style="display: inline-flex"><small class="text-muted">Forfatter</small>&nbsp;&nbsp;<h6>{{news.author}}</h6> </span>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-12">
+                                    <h6><i class="fa fa-clock-o" aria-hidden="true"></i> {{news.publishDateTime | date: 'medium'}}</h6>
+                                </div>
+                            </div>
+                        <div class="row mt-2">
+                            <div class="col-12">
+                                <p>{{news.content}}</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

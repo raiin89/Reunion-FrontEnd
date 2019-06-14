@@ -1,0 +1,85 @@
+<app-social-header></app-social-header>
+<div class="container-fluid">
+        <div class="row">
+            <div class="col-12 mt-2" *ngIf="event">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa fa-align-justify"></i> Arrangement detajler
+                    </div>
+                    <div class="card-body" style="cursor: pointer">
+                        <div class="row">
+                            <div class="col-12">
+                                <h5>{{event.name}}</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                <span style="display: inline-flex"><small class="text-muted">By</small>&nbsp;&nbsp;<h6>{{event.arranger.name}}</h6> </span>
+                            </div> -->
+                            <div class="col-lg-6 col-md-12 col-sm-12 col-12">
+                                <h6><i class="fa fa-clock-o" aria-hidden="true"></i> {{event.timings[0] | date: 'medium'}} To {{event.timings[1] | date: 'medium'}}</h6>
+                            </div>
+                            <div class="col-lg-6 col-md-12 col-sm-12 col-12">
+                                <h6><i class="fa fa-map-marker" aria-hidden="true"></i> {{event.location.address}}, {{event.location.city}}</h6>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-12">
+                                <h6>Type: {{event.eventType}}</h6>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-12">
+                                <h6>Kategory: {{event.eventCatagory}}</h6>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-12">
+                                <h6>Pris: {{event.price}}</h6>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-12">
+                                <h6>Målgruppe: {{event.targetGroup}}</h6>
+                            </div>
+                        </div>
+                        <div class="row mt-2" *ngIf="event.images.length > 0">
+                            <div class="col-12">
+                                <carousel id="viewCrousel" [interval]="2000">
+                                        <slide *ngFor="let slide of slides; let index=index">
+                                          <img [src]="slide.image" alt="image slide" style="display: block; width: 100%;">
+                                        </slide>
+                                      </carousel>
+                            </div>
+                        </div>
+                        <div class="row mt-2" *ngIf="event.images.length === 0">
+                          <img *ngIf="event.eventCatagory === 'Musik og sang'" class="img-fluid" width="70%" src="assets/img/brand/music.jpg" alt="image">
+                          <img *ngIf="event.eventCatagory === 'Motion og sport'" class="img-fluid" width="70%" src="assets/img/brand/motion.jpg" alt="image">
+                          <img *ngIf="event.eventCatagory === 'Afstemningfest'" class="img-fluid" width="70%" src="assets/img/brand/vote.png" alt="image">
+                          <img *ngIf="event.eventCatagory === 'Film'" class="img-fluid" width="70%" src="assets/img/brand/movie.jpg" alt="image">
+                          <img *ngIf="event.eventCatagory === 'Udstilling'" class="img-fluid" width="70%" src="assets/img/brand/show.jpg" alt="image">
+                          <img *ngIf="event.eventCatagory === 'Folkefest og festival'" class="img-fluid" width="70%" src="assets/img/brand/party.jpg" alt="image">
+                          <img *ngIf="event.eventCatagory === 'Teater'" class="img-fluid" width="70%" src="assets/img/brand/theater.jpeg" alt="image">
+                          <img *ngIf="event.eventCatagory === 'Pædagogisk aktivitet'" class="img-fluid" width="70%" src="assets/img/brand/padagogi.jpg" alt="image">
+                          <img *ngIf="event.eventCatagory === 'Natur'" class="img-fluid" width="70%" src="assets/img/brand/nature.jpg" alt="image">
+                          <img *ngIf="event.eventCatagory === 'Foredrag og debat'" class="img-fluid" width="70%" src="assets/img/brand/nature.jpg" alt="image">
+                          <img *ngIf="event.eventCatagory === 'Kirkelig aktivitet'" class="img-fluid" width="70%" src="assets/img/brand/nature.jpg" alt="image">
+                          <img *ngIf="event.eventCatagory === 'Jubilæum'" class="img-fluid" width="70%" src="assets/img/brand/nature.jpg" alt="image">
+                          <img *ngIf="event.eventCatagory === 'Børn og unge'" class="img-fluid" width="70%" src="assets/img/brand/nature.jpg" alt="image">
+                          <img *ngIf="event.eventCatagory === 'Andet'" class="img-fluid" width="70%" src="assets/img/brand/nature.jpg" alt="image">
+
+                          </div>
+                        <div class="row mt-2">
+                            <div class="col-12">
+                                <p>{{event.description}}</p>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-12">
+                                <h5><i class="fa fa-user" aria-hidden="true"></i> {{event.arranger.name}}</h5>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-12">
+                                <h6><i class="fa fa-envelope-o" aria-hidden="true"></i> {{event.arranger.email}}</h6>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-12">
+                                <h6><i class="fa fa-mobile" aria-hidden="true"></i> {{event.arranger.phone}}</h6>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

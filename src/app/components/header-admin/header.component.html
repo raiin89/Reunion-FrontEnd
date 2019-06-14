@@ -1,0 +1,75 @@
+<app-header
+  [fixed]="true"
+  [navbarBrandFull]="{src: 'assets/img/brand/logo.svg', width: 160, height: 75, alt: 'CoreUI Logo'}"
+  [navbarBrandMinimized]="{src: 'assets/img/brand/sygnet.svg', width: 30, height: 30, alt: 'CoreUI Logo'}"
+  [sidebarToggler]="'lg'"
+  [asideMenuToggler]="'lg'">
+
+  <ul class="nav navbar-nav ml-auto">
+    <li class="nav-item dropdown" dropdown placement="bottom right">
+      <a class="nav-link" data-toggle="dropdown" href="javascript:void(0)" role="button" aria-haspopup="true" aria-expanded="false" dropdownToggle (click)="false">
+        <img src="assets/img/10.jpg" class="img-avatar" alt="admin@bootstrapmaster.com"/>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+        <div class="dropdown-header text-center"><strong>indstillinger</strong></div>
+        <a class="dropdown-item" href="javascript:void(0)" (click)="showEditProfile()"><i class="fa fa-user"></i>Opdater profil</a>
+        <a class="dropdown-item" href="javascript:void(0)" (click)="showChangePasswordCard()"><i class="fa fa-key"></i> Skift kodeord</a>
+        <div class="divider"></div>
+        <a class="dropdown-item" href="javascript:void(0)" (click)="logout()"><i class="fa fa-lock"></i> Logud</a>
+      </div>
+    </li>
+  </ul>
+</app-header>
+
+<div bsModal #updatePasswordModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-child-name">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-child-name" class="modal-title pull-left">Skift kodeord</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideChildModal('changePassword')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <form [formGroup]="changePasswordForm" (ngSubmit)="updatePassword()">
+                <!-- <label for="currentPassword">Current Password</label> -->
+                <input type="password" id="currentPassword1" class="form-control mt-2" formControlName="current" placeholder="Indsæt nuværende kodeord" required>
+
+                <!-- <label for="newPassword">New Password</label> -->
+                <input type="password" id="newPassword1" class="form-control mt-2" formControlName="newPass" placeholder="Indtast ny adgangskode" required>
+
+                <!-- <label for="confirmNewPassword">Confirm New Password</label> -->
+
+              <hr>
+              <button type="submit" [disabled]="!changePasswordForm.valid" class="btn btn-sm btn-primary pull-right"><i class="fa fa-edit"></i> Update</button>
+            </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal #childModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-child-name" [config]="{'backdrop':'static', 'keyboard': false}">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-child-name" class="modal-title pull-left">Rediger bruger</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideChildModal('updateUser')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <form [formGroup]="profileForm" (ngSubmit)="updateUser()">
+              <label for="updateemail">Email</label>
+              <input type="email" id="updateemail1" class="form-control" formControlName="email" placeholder="Indtast email" required>
+
+
+              <label for="updatename">Navn</label>
+              <input type="text" id="updatename1" class="form-control" formControlName="name" placeholder="Indtast navn" required>
+
+            <hr>
+            <button type="submit" [disabled]="!profileForm.valid" class="btn btn-sm btn-primary pull-right"><i class="fa fa-edit"></i> Rediger</button>
+          </form>
+    </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,77 @@
+<div class="app-body">
+  <main class="main d-flex align-items-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8 mx-auto">
+          <div class="card-group">
+            <div class="card p-4">
+              <div class="card-body">
+                <form name="loginForm">
+                  <h1>Genforeningen 2020 </h1>
+
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="icon-user"></i></span>
+                    </div>
+                    <input name="email" type="email" [(ngModel)] = "email" class="form-control" placeholder="Email" autocomplete="username" required>
+                  </div>
+                  <div class="input-group mb-4">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="icon-lock"></i></span>
+                    </div>
+                    <input name="password" type="password" [(ngModel)] = "password" class="form-control" placeholder="Kodeord" autocomplete="current-password" required>
+                  </div>
+                  <div class="row mb-4">
+                    <div class="col-6">
+                      <button type="button" class="btn btn-primary px-4" (click)="login()">Logind</button>
+                    </div>
+                    <div class="col-6 text-right">
+                      <button type="button" class="btn btn-link px-0" (click)="showForgetPassword()">Glemt adgangskode?</button>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <div [hidden]="hideError" class="alert alert-danger" role="alert">
+                        {{loginFailedReason}}
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="card text-white bg-primary py-5 d-md-down-none" style="width:44%">
+              <div class="card-body text-center">
+                <div>
+                  <h2>Genforeningen</h2>
+                  <p>Som registreret administrator for Genforeningen 2020 Sønderborg kan du logge ind for at administrere arrangementer.</p>
+                  <!-- <button type="button" class="btn btn-primary active mt-3">Sign Up</button> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div bsModal #forgetPasswordModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-child-name">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 id="dialog-child-name" class="modal-title pull-left">Add User</h4>
+          <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+              <form [formGroup]="profileForm" (ngSubmit)="forgetPassword()">
+                <label for="addemail">Email</label>
+                <input type="email" id="addemail" class="form-control" formControlName="email" placeholder="Indtast email" required>
+                <hr>
+                <button type="submit" [disabled]="!profileForm.valid" class="btn btn-sm btn-primary pull-right"><i class="fa fa-envelope"></i> Send</button>
+              </form>
+        </div>
+      </div>
+    </div>
+  </div>

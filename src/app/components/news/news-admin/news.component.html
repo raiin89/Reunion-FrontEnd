@@ -1,0 +1,269 @@
+<app-header-new></app-header-new>
+<div class="app-body">
+  <app-sidebar [fixed]="true" [display]="'lg'">
+    <app-sidebar-nav [navItems]="navItems" [perfectScrollbar] [disabled]="sidebarMinimized"></app-sidebar-nav>
+    <app-sidebar-minimizer></app-sidebar-minimizer>
+  </app-sidebar>
+  <main class="main">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item ng-star-inserted">
+        <a class="ng-star-inserted">Hjemme</a>
+      </li>
+      <li class="breadcrumb-item active ng-star-inserted">
+        <span tabindex="0" class="ng-star-inserted">Nyheder</span>
+      </li>
+    </ol>
+    <div class="container-fluid">
+        <div *ngIf="showSuccessAlert" class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Success</strong> {{apiMsg}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div *ngIf="showErrorAlert" class="alert alert-error alert-dismissible fade show" role="alert">
+            <strong>Success</strong> {{apiMsg}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+          <div class="card">
+            <div class="card-header">
+              <i class="fa fa-align-justify"></i> Nyheder
+              <button type="button" title="Edit" class="btn btn-pill btn-info pull-right" (click)="showAddNewsForm()"><i class="fa fa-plus-circle"></i></button>
+            </div>
+
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table">
+                  <thead>
+                    <tr>
+                      <th>Overskrift <input type="text" class="form-control" [(ngModel)]="searchObj.headline" placeholder=" Søg overskrift "></th>
+                      <th>Forfatter <input type="text" class="form-control" [(ngModel)]="searchObj.author" placeholder="Search forfætter"></th>
+                      <th>Action <input type="text" class="form-control" disabled></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- filter pipe placed before paginate to get correct search result -->
+                    <tr *ngFor="let news of newsList | filterBy: searchObj | paginate: { itemsPerPage: 5, currentPage: p }">
+                      <td>{{news.headline}}</td>
+                      <td>{{news.author}}</td>
+                      <td>
+                        <button type="button" title="Vis" class="btn btn-pill btn-info ml-1" (click)="showViewNewsModal(news)"><i class="fa fa-info-circle"></i></button>
+                        <button type="button" title="Redigere" class="btn btn-pill btn-warning ml-1" (click)="showUpdateNewsModal(news)"><i class="fa fa-edit"></i></button>
+                        <button type="button" title="Slet" class="btn btn-pill btn-danger ml-1" (click)="showConfirmationModal(news._id)"><i class="fa fa-times-circle"></i></button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 col-12">
+                    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </main>
+</div>
+
+<div bsModal #viewNewsModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-child-name">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-child-name" class="modal-title pull-left">Nyhed deatajler</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideChildModal('viewNews')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="selectedNews">
+        <div class="row">
+          <div class="col-12">
+            <h4>{{selectedNews.headline}}</h4>
+            <small>{{selectedNews.content}}</small>
+          </div>
+        </div>
+        <div class="row mt-1">
+          <div class="col-12">
+            <h6>Forfætter: {{selectedNews.author}}</h6>
+          </div>
+        </div>
+          <div class="row mt-1">
+              <carousel id="viewCrousel" [(activeSlide)]="activeSlideIndex" [interval]="myInterval">
+                  <slide *ngFor="let slide of slides; let index=index">
+                    <img [src]="slide.image" alt="image slide" style="display: block; width: 100%;">
+
+                    <div class="carousel-caption">
+                      <h4>{{selectedNews.headline}}</h4>
+                      <!-- <p>{{selectedNews.content}}</p> -->
+                    </div>
+                  </slide>
+                </carousel>
+          </div>
+          <div class="row mt-1">
+              <div class="col-12">
+                <h6>Referencer</h6>
+              </div>
+                <div class="col-12" *ngFor="let link of selectedNews.links">
+                    <a href="{{link}}">{{link}}</a>
+                </div>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal #addNewsModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-child-name">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-child-name" class="modal-title pull-left">Tilføj en nyhed</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideChildModal('addNews')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <form [formGroup]="addNewsForm" (ngSubmit)="addNews()" enctype="multipart/form-data">
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                  <input type="text" id="headline" class="form-control" formControlName="headline" placeholder="Indtast Overskrift" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                  <textarea rows="5" id="content" class="form-control" formControlName="content" placeholder="Indtast Inhold" required></textarea>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                  <input type="text" id="author" class="form-control" formControlName="author" placeholder="Indtast dit navn" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-10">
+                  <div formArrayName="links" *ngFor="let link of addNewsForm.get('links')['controls']; let i = index;">
+                    <div [formGroupName]="i" class="form-group">
+                      <input type="text" id="i" class="form-control" formControlName="link" placeholder="Indtast URL">
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <button type="button" id="addLink" class="btn btn-pill btn-primary" (click)="addLinks('')"><i class="fa fa-plus-circle"></i></button>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                  <input type="file" multiple (change)="addImagesToForm($event)">
+                </div>
+              </div>
+              <hr>
+              <button type="submit" [disabled]="!addNewsForm.valid" class="btn btn-sm btn-primary pull-right"><i class="fa fa-plus-circle"></i> Tilføj</button>
+            </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal #updateNewsModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-child-name">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-child-name" class="modal-title pull-left">Opdater Nyhed</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideChildModal('updateNews')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <form [formGroup]="updateNewsForm" (ngSubmit)="updateNews()" enctype="multipart/form-data">
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                  <input type="text" id="headline1" class="form-control" formControlName="headline" placeholder="Indtast Overskrift" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                  <textarea rows="5" id="content1" class="form-control" formControlName="content" placeholder="Indtast Inhold" required></textarea>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                  <input type="text" id="author1" class="form-control" formControlName="author" placeholder="Indtast dit navn" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-10">
+                  <div formArrayName="links" *ngFor="let link of updateNewsForm.get('links')['controls']; let i = index;">
+                    <div [formGroupName]="i" class="form-group">
+                      <input type="text" id="j" class="form-control" formControlName="link" placeholder="Indtast URL">
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group col-md-2">
+                  <button type="button" id="addLink1" class="btn btn-pill btn-primary" (click)="addLinks('')"><i class="fa fa-plus-circle"></i></button>
+                </div>
+              </div>
+              <div class="form-row mt-1">
+                <div class="col-12">
+                  <button type="submit" [disabled]="!updateNewsForm.valid" class="btn btn-sm btn-primary pull-right"><i class="fa fa-edit"></i>Redigere</button>
+                </div>
+              </div>
+              <hr>
+              <div class="form-row mt-3">
+                <!-- <div class="col-12">
+                  <h6>Update Images</h6>
+                </div> -->
+                <div class="col-12 align-right">
+                    <!-- <input type="file" name="file" id="file" class="inputfile" /> -->
+                    <input type="file" name="file" id="file" class="inputfile" multiple (change)="updateImageToNews($event)" class="inputfile pull-right">
+                    <label for="file"><i class="fa fa-upload" aria-hidden="true"></i> Tilføj billede</label>
+                </div>
+              </div>
+              <div class="form-row mt-1">
+                <div class="col-12">
+                  <carousel [interval]="false">
+                      <slide *ngFor="let slide of slides; let index=index">
+                        <img [src]="slide.image" alt="image slide" style="display: block; width: 100%;">
+                      </slide>
+                    </carousel>
+                </div>
+                <div class="col-12 mt-3" *ngIf="slides.length > 0">
+                    <button type="button" title="Remove Current Slide" *ngIf="!imageDeleteConfirmation" class="btn btn-pill btn-danger pull-right" (click)="imageDeleteConfirmation = true"><i class="fa fa-times"></i> Slet billede</button>
+                </div>
+                <div class="col-12 mt-3" *ngIf="imageDeleteConfirmation">
+                  <h6>Er du sikker på, at slette dette billede?</h6>
+                    <button type="button" title="Remove Current Slide" class="btn btn-pill btn-danger pull-right mr-2" (click)="removeSlide()">Sikker</button>
+                    <button type="button" title="Cancel" class="btn btn-pill btn-light pull-right mr-2" (click)="imageDeleteConfirmation = false">Nej</button>
+                </div>
+                <!-- <div class="form-group col-12" *ngFor="let image of imagesPreview">
+                  <img src="{{image}}" alt="image" class="img-thumbnail">
+                </div> -->
+              </div>
+            </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div bsModal #deleteConfirmationModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-child-name">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-child-name" class="modal-title pull-left">Slet Nyhed</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideChildModal('deleteNewsConfimation')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h6>Er du sikker på, at slette denne nyhed?</h6>
+      </div>
+      <div class="modal-footer">
+        <button type="button" title="Cancel" class="btn btn-pill btn-light pull-right mr-2" (click)="hideChildModal('deleteNewsConfimation')">Nej</button>
+        <button type="button" title="Delete" class="btn btn-pill btn-danger pull-right mr-2" (click)="deleteNews()">Ja</button>
+      </div>
+    </div>
+  </div>
+</div>
+

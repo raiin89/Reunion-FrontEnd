@@ -1,0 +1,147 @@
+<app-header-new></app-header-new>
+<div class="app-body">
+  <app-sidebar [fixed]="true" [display]="'lg'">
+    <app-sidebar-nav [navItems]="navItems" [perfectScrollbar] [disabled]="sidebarMinimized"></app-sidebar-nav>
+    <app-sidebar-minimizer></app-sidebar-minimizer>
+  </app-sidebar>
+  <main class="main">
+    <ol class="breadcrumb"><!----><!---->
+      <li class="breadcrumb-item ng-star-inserted"><!---->
+        <a class="ng-star-inserted">Home</a><!---->
+      </li><!----><!----><!----><!---->
+      <li class="breadcrumb-item active ng-star-inserted"><!----><!---->
+        <span tabindex="0" class="ng-star-inserted">Brugere</span>
+      </li><!---->
+    </ol>
+    <div class="container-fluid">
+        <div *ngIf="showSuccessAlert" class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Success</strong> {{apiMsg}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div *ngIf="showErrorAlert" class="alert alert-error alert-dismissible fade show" role="alert">
+            <strong>Success</strong> {{apiMsg}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        <div class="row">
+            <div class="col-12">
+              <div *ngIf="!isAdmin" class="alert alert-danger" role="alert">
+                Only Admin can see this page.
+              </div>
+            </div>
+          </div>
+      <div class="row" *ngIf="isAdmin">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+          <div class="card">
+            <div class="card-header">
+              <i class="fa fa-align-justify"></i> Bruger
+              <button type="button" title="Rediger" class="btn btn-pill btn-info pull-right" (click)="addUser()"><i class="fa fa-plus-circle"></i></button>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table">
+                  <thead>
+                    <tr>
+                      <th>Bruger navn <input type="text" class="form-control" [(ngModel)]="searchObj.name" placeholder="Søg navn"></th>
+                      <th>Bruger email <input type="text" class="form-control" [(ngModel)]="searchObj.email" placeholder="Søg email"></th>
+                      <th>Actions <input type="text" class="form-control" disabled></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let user of usersList | filterBy: searchObj | paginate: { itemsPerPage: 5, currentPage: p }">
+                      <td>{{user.name}}</td>
+                      <td>{{user.email}}</td>
+                      <td>
+                        <button type="button" title="Rediger" class="btn btn-pill btn-info ml-1" (click)="viewUser(user)"><i class="fa fa-edit"></i></button>
+                        <button type="button" title="Slet" class="btn btn-pill btn-danger ml-1" (click)="showConfirmationModal(user._id)"><i class="fa fa-times-circle"></i></button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 col-12">
+                    <pagination-controls [autoHide]="autoHide" [responsive]="responsive" (pageChange)="p = $event"></pagination-controls>
+                  <!-- <pagination [totalItems]="bigTotalItems" [itemsPerPage]="5" [(ngModel)]="bigCurrentPage" (pageChanged)="pageChanged($event)" [maxSize]="maxSize" class="pagination-sm" previousText="&lsaquo;" nextText="&rsaquo;" [boundaryLinks]="true"></pagination> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </main>
+</div>
+<div bsModal #childModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-child-name" [config]="{'backdrop':'static', 'keyboard': false}">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-child-name" class="modal-title pull-left">Rediger bruger</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideChildModal('updateUser')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <form [formGroup]="profileForm" (ngSubmit)="updateUser()">
+              <label for="updateemail">Email</label>
+              <input type="email" id="updateemail" class="form-control" formControlName="email" placeholder="Indtast email" required>
+
+
+              <label for="updatename">Navn</label>
+              <input type="text" id="updatename" class="form-control" formControlName="name" placeholder="Indtast navn" required>
+
+            <hr>
+            <button type="submit" [disabled]="!profileForm.valid" class="btn btn-sm btn-primary pull-right"><i class="fa fa-edit"></i> Update</button>
+          </form>
+    </div>
+    </div>
+  </div>
+</div>
+<div bsModal #addUserModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-child-name">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-child-name" class="modal-title pull-left">Tilføj bruger</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideChildModal('addUser')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+                <label for="addemail">Email</label>
+                <input type="email" id="addemail" class="form-control" formControlName="email" placeholder="Indtast email" required>
+
+
+                <label for="name">Navn</label>
+                <input type="text" id="name" class="form-control" formControlName="name" placeholder="Indtast navn" required>
+
+              <hr>
+              <button type="submit" [disabled]="!profileForm.valid" class="btn btn-sm btn-primary pull-right"><i class="fa fa-plus-circle"></i> Oprett</button>
+            </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal #deleteConfirmationModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-child-name">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 id="dialog-child-name" class="modal-title pull-left">Slet brugen</h4>
+          <button type="button" class="close pull-right" aria-label="Close" (click)="hideChildModal('deleteUserConfirmation')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h6>Er du sikker på, at slette denne bruger?</h6>
+        </div>
+        <div class="modal-footer">
+          <button type="button" title="Nej" class="btn btn-pill btn-light pull-right mr-2" (click)="hideChildModal('deleteUserConfirmation')">Nej</button>
+          <button type="button" title="Ja" class="btn btn-pill btn-danger pull-right mr-2" (click)="deleteUser()">Bekræft</button>
+        </div>
+      </div>
+    </div>
+  </div>

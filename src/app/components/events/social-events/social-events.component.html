@@ -1,0 +1,75 @@
+<app-social-header></app-social-header>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-12 mt-2">
+            <h5>Arrangementer</h5>
+            <div *ngFor="let event of events">
+                <div class="card" (click)="viewEvent(event._id)">
+                    <!-- <div class="card-header">
+                        <i class="fa fa-align-justify"></i> {{event.name}}
+                    </div> -->
+                    <div class="card-body" style="cursor: pointer">
+                            <img *ngIf="event.images.length > 0" class="img-fluid" width="100%" src="{{event.images[0]}}" alt="image">
+                            <img *ngIf="event.images.length === 0 && event.eventCatagory === 'Musik og sang'" class="img-fluid" width="100%" src="assets/img/brand/music.jpg" alt="image">
+                            <img *ngIf="event.images.length === 0 && event.eventCatagory === 'Motion og sport'" class="img-fluid" width="100%" src="assets/img/brand/motion.jpg" alt="image">
+                            <img *ngIf="event.images.length === 0 && event.eventCatagory === 'Afstemningfest'" class="img-fluid" width="100%" src="assets/img/brand/vote.png" alt="image">
+                            <img *ngIf="event.images.length === 0 && event.eventCatagory === 'Film'" class="img-fluid" width="100%" src="assets/img/brand/movie.jpg" alt="image">
+                            <img *ngIf="event.images.length === 0 && event.eventCatagory === 'Udstilling'" class="img-fluid" width="100%" src="assets/img/brand/show.jpg" alt="image">
+                            <img *ngIf="event.images.length === 0 && event.eventCatagory === 'Folkefest og festival'" class="img-fluid" width="100%" src="assets/img/brand/party.jpg" alt="image">
+                            <img *ngIf="event.images.length === 0 && event.eventCatagory === 'Teater'" class="img-fluid" width="100%" src="assets/img/brand/theater.jpeg" alt="image">
+                            <img *ngIf="event.images.length === 0 && event.eventCatagory === 'Pædagogisk aktivitet'" class="img-fluid" width="100%" src="assets/img/brand/padagogi.jpg" alt="image">
+                            <img *ngIf="event.images.length === 0 && event.eventCatagory === 'Natur'" class="img-fluid" width="100%" src="assets/img/brand/nature.jpg" alt="image">
+                            <img *ngIf="event.images.length === 0 && event.eventCatagory === 'Foredrag og debat'" class="img-fluid" width="100%" src="assets/img/brand/nature.jpg" alt="image">
+                            <img *ngIf="event.images.length === 0 && event.eventCatagory === 'Kirkelig aktivitet'" class="img-fluid" width="100%" src="assets/img/brand/nature.jpg" alt="image">
+                            <img *ngIf="event.images.length === 0 && event.eventCatagory === 'Jubilæum'" class="img-fluid" width="100%" src="assets/img/brand/nature.jpg" alt="image">
+                            <img *ngIf="event.images.length === 0 && event.eventCatagory === 'Børn og unge'" class="img-fluid" width="100%" src="assets/img/brand/nature.jpg" alt="image">
+                            <img *ngIf="event.images.length === 0 && event.eventCatagory === 'Andet'" class="img-fluid" width="100%" src="assets/img/brand/nature.jpg" alt="image">
+
+                        <h6 class="mt-3">{{event.name}}</h6>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                <span style="display: inline-flex"><small class="text-muted">Arrangør</small>&nbsp;&nbsp;<h6>{{event.arranger.name}}</h6> </span>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                <h6>Målgruppe: {{event.targetGroup}}</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-lg-6 col-md-12 col-sm-12 col-12">
+                                <h6><i class="fa fa-clock-o" aria-hidden="true"></i> {{event.timings[0] | date: 'medium'}} To {{event.timings[1] | date: 'medium'}}</h6>
+                            </div>
+                            <div class="col-lg-6 col-md-12 col-sm-12 col-12">
+                                <h6><i class="fa fa-map-marker" aria-hidden="true"></i> {{event.location.address}}, {{event.location.city}}</h6>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-12 mt-2">
+            <h5>Nyheder</h5>
+            <div *ngFor="let newss of news">
+                    <div class="card" (click)="viewNews(newss._id)">
+                        <div class="card-body" style="cursor: pointer">
+                            <img *ngIf="newss.images.length > 0" class="img-fluid" width="100%" src="{{newss.images[0]}}" alt="image">
+                            <h6 class="mt-3">{{newss.headline}}</h6>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                    <span style="display: inline-flex"><small class="text-muted">Forfætter</small>&nbsp;&nbsp;<h6>{{newss.author}}</h6> </span>
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                                    <h6><i class="fa fa-clock-o" aria-hidden="true"></i> {{newss.publishDateTime | date: 'medium'}}</h6>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>

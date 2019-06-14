@@ -1,0 +1,212 @@
+<app-header-new></app-header-new>
+<div class="app-body">
+  <app-sidebar [fixed]="true" [display]="'lg'">
+    <app-sidebar-nav [navItems]="navItems" [perfectScrollbar] [disabled]="sidebarMinimized"></app-sidebar-nav>
+    <app-sidebar-minimizer></app-sidebar-minimizer>
+  </app-sidebar>
+  <main class="main">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item ng-star-inserted">
+        <a class="ng-star-inserted">Hjemme</a>
+      </li>
+      <li class="breadcrumb-item active ng-star-inserted">
+        <span tabindex="0" class="ng-star-inserted">Arrangementer</span>
+      </li>
+    </ol>
+    <div class="container-fluid">
+        <div *ngIf="showSuccessAlert" class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Success</strong> {{apiMsg}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div *ngIf="showErrorAlert" class="alert alert-error alert-dismissible fade show" role="alert">
+            <strong>Success</strong> {{apiMsg}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+          <div class="card">
+            <div class="card-header">
+              <i class="fa fa-align-justify"></i> Arrangementer
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table">
+                  <thead>
+                    <tr>
+                      <th>Title <input type="text" class="form-control" [(ngModel)]="searchObj.name" placeholder="Søg navn"></th>
+                      <th>Kategory <input type="text" class="form-control" [(ngModel)]="searchObj.eventCatagory" placeholder="Søg kategory"></th>
+                      <!-- <th>Timings <input type="text" class="form-control" disabled></th> -->
+                      <!-- <th>Time <input type="text" class="form-control" disabled></th> -->
+                      <th>Målgruppe <input type="text" class="form-control" [(ngModel)]="searchObj.targetGroup" placeholder="Søg målgruppe"></th>
+                      <th>By <input type="text" class="form-control" [(ngModel)]="searchObj.location.city" placeholder="Søg By"></th>
+                      <th>Action <input type="text" class="form-control" disabled></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let event of eventsList | filterBy: searchObj | paginate: { itemsPerPage: 5, currentPage: p }">
+                      <td>{{event.name}}</td>
+                      <td>{{event.eventCatagory}}</td>
+                      <td>{{event.targetGroup}}</td>
+                      <td>{{event.location.city}}</td>
+                      <td>
+                        <button type="button" title="Vis" class="btn btn-pill btn-info ml-1" (click)="viewEvent(event)"><i class="fa fa-info-circle"></i></button>
+                        <button type="button" title="Godkendt" *ngIf="event.approvalStatus === 'pending'" class="btn btn-pill btn-success ml-1" (click)="updateEventStatus(event, 'approved')"><i class="fa fa-check"></i></button>
+                        <button type="button" title="Afvis" *ngIf="event.approvalStatus === 'pending'" class="btn btn-pill btn-warning ml-1" (click)="showRejectionModal(event)"><i class="fa fa-ban"></i></button>
+                        <button type="button" title="Slet" class="btn btn-pill btn-danger ml-1" (click)="showConfirmationModal(event._id)"><i class="fa fa-times-circle"></i></button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 col-12">
+                    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </main>
+</div>
+
+<div bsModal #viewEventModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-child-name">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-child-name" class="modal-title pull-left">Arrangement detajler</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="selectedEvent">
+        <div class="row">
+          <div class="col-12">
+            <h6>{{selectedEvent.name}} - ( {{selectedEvent.eventType}} )</h6>
+            <small>{{selectedEvent.description}}</small>
+          </div>
+        </div>
+        <!-- <hr> -->
+        <div class="row mt-2">
+          <div class="col-lg-6 col-md-6 col-sm-6 col-12">
+              <h6>Hvornår</h6>
+              <small>{{selectedEvent.timings[0] | date: 'medium'}} To {{selectedEvent.timings[1] | date: 'medium'}}</small>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6 col-12">
+            <h6>Hvor</h6>
+            <small>{{selectedEvent.location.address}}, {{selectedEvent.location.city}}.</small>
+            <!-- <small>Zip: {{selectedEvent.location.zip}}.</small> -->
+          </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-12">
+              <h6>Arrangør</h6>
+              <p class="mb-0">{{selectedEvent.arranger.name}}</p>
+              <small>
+                <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                {{selectedEvent.arranger.email}}
+              </small><br>
+              <small>
+                <i class="fa fa-phone" aria-hidden="true"></i>
+                {{selectedEvent.arranger.phone}}
+              </small>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-12">
+                <h6>Pris</h6>
+                <small>{{selectedEvent.price}}</small>
+                <h6>Catagory</h6>
+                <small>{{selectedEvent.eventCatagory}}</small>
+              </div>
+          </div>
+          <div class="row mt-2" *ngIf="selectedEvent.images.length > 0">
+              <div class="col-12 mt-1" *ngFor="let image of selectedEvent.images">
+                  <img src="{{image}}" class="img-fluid" alt="image">
+              </div>
+          </div>
+          <div class="row mt-2" *ngIf="selectedEvent.images.length === 0">
+            <img *ngIf="selectedEvent.eventCatagory === 'Musik og sang'" class="img-fluid" width="100%" src="assets/img/brand/music.jpg" alt="image">
+            <img *ngIf="selectedEvent.eventCatagory === 'Motion og sport'" class="img-fluid" width="100%" src="assets/img/brand/motion.jpg" alt="image">
+            <img *ngIf="selectedEvent.eventCatagory === 'Afstemningfest'" class="img-fluid" width="100%" src="assets/img/brand/vote.png" alt="image">
+            <img *ngIf="selectedEvent.eventCatagory === 'Film'" class="img-fluid" width="100%" src="assets/img/brand/movie.jpg" alt="image">
+            <img *ngIf="selectedEvent.eventCatagory === 'Udstilling'" class="img-fluid" width="100%" src="assets/img/brand/show.jpg" alt="image">
+            <img *ngIf="selectedEvent.eventCatagory === 'Folkefest og festival'" class="img-fluid" width="100%" src="assets/img/brand/party.jpg" alt="image">
+            <img *ngIf="selectedEvent.eventCatagory === 'Teater'" class="img-fluid" width="100%" src="assets/img/brand/theater.jpeg" alt="image">
+            <img *ngIf="selectedEvent.eventCatagory === 'Pædagogisk aktivitet'" class="img-fluid" width="100%" src="assets/img/brand/padagogi.jpg" alt="image">
+            <img *ngIf="selectedEvent.eventCatagory === 'Natur'" class="img-fluid" width="100%" src="assets/img/brand/nature.jpg" alt="image">
+            <img *ngIf="selectedEvent.eventCatagory === 'Foredrag og debat'" class="img-fluid" width="100%" src="assets/img/brand/nature.jpg" alt="image">
+            <img *ngIf="selectedEvent.eventCatagory === 'Kirkelig aktivitet'" class="img-fluid" width="100%" src="assets/img/brand/nature.jpg" alt="image">
+            <img *ngIf="selectedEvent.eventCatagory === 'Jubilæum'" class="img-fluid" width="100%" src="assets/img/brand/nature.jpg" alt="image">
+            <img *ngIf="selectedEvent.eventCatagory === 'Børn og unge'" class="img-fluid" width="100%" src="assets/img/brand/nature.jpg" alt="image">
+            <img *ngIf="selectedEvent.eventCatagory === 'Andet'" class="img-fluid" width="100%" src="assets/img/brand/nature.jpg" alt="image">
+
+        </div>
+          <div class="row mt-2" *ngIf="selectedEvent.links.length > 0">
+              <div class="col-12">
+                <h6>Links</h6>
+              </div>
+              <div class="col-12" *ngFor="let link of selectedEvent.links">
+                  <a href="{{link}}">{{link}}</a>
+              </div>
+              <!-- <div class="col-lg-6 col-md-6 col-sm-6 col-12">
+                  <a href="{{selectedEvent.links.moreDetails}}">For more details</a>
+              </div> -->
+          </div>
+      </div>
+      <div class="modal-footer" *ngIf="selectedEvent">
+        <button type="button" title="Approve"  *ngIf="selectedEvent.approvalStatus === 'pending'" class="btn btn-pill btn-success ml-1" (click)="updateEventStatus(selectedEvent, 'approved')"><i class="fa fa-check"></i> Approve</button>
+        <button type="button" title="Reject" *ngIf="selectedEvent.approvalStatus === 'pending'" class="btn btn-pill btn-danger ml-1"  (click)="showRejectionModal(selectedEvent)"><i class="fa fa-times-circle"></i> Reject</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal #deleteConfirmationModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-child-name">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 id="dialog-child-name" class="modal-title pull-left">Delete Event</h4>
+          <button type="button" class="close pull-right" aria-label="Close" (click)="hideConfirmationModal()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h6>Are you sure you want to delete this event?</h6>
+        </div>
+        <div class="modal-footer">
+          <button type="button" title="Cancel" class="btn btn-pill btn-light pull-right mr-2" (click)="hideConfirmationModal()">Cancel</button>
+          <button type="button" title="Delete" class="btn btn-pill btn-danger pull-right mr-2" (click)="deleteEvent()">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div bsModal #rejectionReasonModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-child-name">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 id="dialog-child-name" class="modal-title pull-left">Reject Event</h4>
+          <button type="button" class="close pull-right" aria-label="Close" (click)="hideRejectionModal()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h6>Why do you want to reject this event?</h6>
+          <div class="row">
+            <div class="col-12">
+              <textarea name="rejectionReason" id="rejectionReason" rows="6" style="width: 100%" [(ngModel)]="rejectionReason" placeholder="Enter reason"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" title="Cancel" class="btn btn-pill btn-light pull-right mr-2" (click)="hideRejectionModal()">Cancel</button>
+          <button type="button" title="Reject" class="btn btn-pill btn-danger ml-1"  (click)="rejectSelectedEvent()"><i class="fa fa-times-circle"></i> Reject</button>
+        </div>
+      </div>
+    </div>
+  </div>
+

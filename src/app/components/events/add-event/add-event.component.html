@@ -1,0 +1,169 @@
+<app-social-header></app-social-header>
+<div class="container-fluid">
+    <div *ngIf="showSuccessAlert" class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+        <strong>Success</strong> {{apiMsg}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div *ngIf="showErrorAlert" class="alert alert-error alert-dismissible fade show" role="alert">
+        <strong>Success</strong> {{apiMsg}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+  <div class="row mt-2">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-align-justify"></i> Ansøg om et arrangement her
+        </div>
+        <div class="card-body">
+          <form [formGroup]="addEventForm" (ngSubmit)="addEvent()">
+            <h6>Arrangement Detaljer</h6>
+              <div class="form-row">
+                  <div class="form-group col-lg-4 col-md-4 col-sm-6 col-12">
+                    <input type="text" id="name" class="form-control" formControlName="name" placeholder="Indtast titel" [ngClass]="{ 'is-invalid': submitted && f.name.errors }" required>
+                    <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+                      <div *ngIf="f.name.errors.required">Titel er påkrævet</div>
+                      <div *ngIf="f.name.errors.maxlength">Titel skal være mindre end 100 tegn</div>
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-3 col-md-3 col-sm-6 col-12">
+                    <select name="eventType" id="eventType" class="form-control" formControlName="eventType" [ngClass]="{ 'is-invalid': submitted && f.eventType.errors }" required>
+                      <option value="">Åbent eller lukket?</option>
+                      <option value="{{eventType}}" *ngFor="let eventType of eventTypes">{{eventType | titlecase}}</option>
+                    </select>
+                    <div *ngIf="submitted && f.eventType.errors" class="invalid-feedback">
+                      <div *ngIf="f.eventType.errors.required">Du skal vælge åbent eller lukket arrangement</div>
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-3 col-md-3 col-sm-6 col-12">
+                    <select name="eventCatagory" id="eventCatagory" class="form-control" formControlName="eventCatagory" [ngClass]="{ 'is-invalid': submitted && f.eventCatagory.errors }" required>
+                      <option value="">Valg Kategorien</option>
+                      <option value="{{catagory}}" *ngFor="let catagory of eventCatagories">{{catagory | titlecase}}</option>
+                    </select>
+                    <div *ngIf="submitted && f.eventCatagory.errors" class="invalid-feedback">
+                      <div *ngIf="f.eventCatagory.errors.required">Kategorien er påkrævet</div>
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-2 col-md-2 col-sm-6 col-12">
+                    <input type="text" pattern="[0-9]*" name="price" id="price" class="form-control" formControlName="price" placeholder="Indtast Pris" [ngClass]="{ 'is-invalid': submitted && f.price.errors }" required>
+                    <div *ngIf="submitted && f.price.errors" class="invalid-feedback">
+                      <div *ngIf="f.price.errors.required">Pris er påkrævet</div>
+                      <div *ngIf="f.price.errors">Pris skal være et nummer</div>
+                    </div>
+                  </div>
+                  <div class="form-group col-12">
+                    <textarea name="description" id="description" class="form-control" rows="5" formControlName="description" placeholder="indtast beskrivelse" required [ngClass]="{ 'is-invalid': submitted && f.description.errors }"></textarea>
+                    <div *ngIf="submitted && f.description.errors" class="invalid-feedback">
+                      <div *ngIf="f.description.errors.required">Beskrivelse er påkrævet</div>
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-4 col-md-4 col-sm-6 col-12">
+                    <input class="form-control" name="timings" id="timings" placeholder="Valg start og slut tidspunkter" formControlName="timings" [owlDateTimeTrigger]="dtPicker2" [owlDateTime]="dtPicker2" [selectMode]="'range'" [ngClass]="{ 'is-invalid': submitted && f.timings.errors }" required>
+                    <owl-date-time #dtPicker2></owl-date-time>
+                    <div *ngIf="submitted && f.timings.errors" class="invalid-feedback">
+                      <div *ngIf="f.timings.errors.required">Arrangement tider er påkrævet</div>
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-3 col-md-3 col-sm-6 col-12">
+                      <select name="targetGroup" id="targetGroup" class="form-control" formControlName="targetGroup" [ngClass]="{ 'is-invalid': submitted && f.targetGroup.errors }" required>
+                        <option value="">Valg målgruppe</option>
+                        <option value="{{targetGroup}}" *ngFor="let targetGroup of targetGroups">{{targetGroup | titlecase}}</option>
+                      </select>
+                      <div *ngIf="submitted && f.targetGroup.errors" class="invalid-feedback">
+                        <div *ngIf="f.targetGroup.errors.required">målgruppe er påkrævet</div>
+                      </div>
+                  </div>
+              </div>
+            <hr>
+            <h6>Arrangement stid</h6>
+            <div class="form-row">
+              <div class="form-group col-lg-4 col-md-4 col-sm-6 col-12">
+                <input type="text" name="address" id="address" class="form-control" formControlName="address" placeholder="Adresse" [ngClass]="{ 'is-invalid': submitted && f.address.errors }" required>
+                <div *ngIf="submitted && f.address.errors" class="invalid-feedback">
+                  <div *ngIf="f.address.errors.required">Addresen er påkrævet</div>
+                </div>
+              </div>
+              <div class="form-group col-lg-4 col-md-4 col-sm-6 col-12">
+                <input type="text" name="city" id="city" class="form-control" formControlName="city" placeholder="By" [ngClass]="{ 'is-invalid': submitted && f.city.errors }" required>
+                <div *ngIf="submitted && f.city.errors" class="invalid-feedback">
+                  <div *ngIf="f.city.errors.required">By er påkrævet</div>
+                </div>
+              </div>
+              <div class="form-group col-lg-4 col-md-4 col-sm-6 col-12">
+                <input type="text" name="zip" id="zip" pattern="[0-9]*" class="form-control" formControlName="zip" placeholder="Postnummer" [ngClass]="{ 'is-invalid': submitted && f.zip.errors }" required>
+                <div *ngIf="submitted && f.zip.errors" class="invalid-feedback">
+                  <div *ngIf="f.zip.required">Postnummeren er påkrævet</div>
+                  <div *ngIf="f.zip.errors">Postnummeren skal være et nummer</div>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <h6>Arrangør Detajler </h6>
+            <div class="form-row">
+              <div class="form-group col-lg-4 col-md-4 col-sm-6 col-12">
+                <input type="text" name="arrangerName" id="arrangerName" class="form-control" formControlName="arrangername" placeholder="Navn" [ngClass]="{ 'is-invalid': submitted && f.arrangername.errors }" required>
+                <div *ngIf="submitted && f.arrangername.errors" class="invalid-feedback">
+                  <div *ngIf="f.arrangername.errors.required">Navn er påkrævet</div>
+                  <div *ngIf="f.arrangername.errors.maxlength">Navn skal være mindre end 100 tegn</div>
+                </div>
+              </div>
+              <div class="form-group col-lg-4 col-md-4 col-sm-6 col-12">
+                <input type="email" id="email" class="form-control" formControlName="email" placeholder="Email" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" required>
+                <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                  <div *ngIf="f.email.errors.required">Dit email er påkrævet</div>
+                  <div *ngIf="f.email.errors.email">Indtast et gyldigt email </div>
+                </div>
+              </div>
+              <div class="form-group col-lg-4 col-md-4 col-sm-6 col-12">
+                <input type="tel" id="phone"  class="form-control" formControlName="phone" placeholder="Indtast telefon nummer" [ngClass]="{ 'is-invalid': submitted && f.phone.errors }">
+                <div *ngIf="submitted && f.phone.errors" class="invalid-feedback">
+                  <div *ngIf="f.phone.errors">Indtast et gyldigt nummer</div>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <h6>Ekstra detaljer</h6>
+            <div class="form-row">
+                <div class="form-group col-lg-11 col-md-11 col-sm-11 col-10">
+                    <div formArrayName="links" *ngFor="let link of addEventForm.get('links')['controls']; let i = index;">
+                      <div [formGroupName]="i" class="form-group">
+                        <input type="url" id="i" class="form-control" formControlName="link" placeholder="Eksternal url">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-1 col-md-1 col-sm-1 col-2">
+                      <button type="button" id="addLink" class="btn btn-pill btn-primary" (click)="addLinks('')"><i class="fa fa-plus-circle"></i></button>
+                  </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-12">
+                    <input type="file" multiple (change)="addImagesToForm($event)">
+                  </div>
+            </div>
+            <hr>
+            <button type="submit" class="btn btn-sm btn-primary pull-right"><i class="fa fa-plus-circle"></i> Ansøg </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal #eventConfirmationModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-child-name" [config]="{'backdrop':'static', 'keyboard': false}">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 id="dialog-child-name" class="modal-title pull-left">Ansøgning er sendt</h4>
+        </div>
+        <div class="modal-body">
+          <h6>Asnøgning er modtaget, du bliver kontaktet snarest muligt <br> Tak </h6>
+        </div>
+        <div class="modal-footer">
+          <button type="button" title="Delete" class="btn btn-pill btn-success pull-right mr-2" (click)="ok()">Godkendt</button>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,48 @@
+<div class="row">
+    <div class="col-12">
+        <img src="assets/img/brand/header.png" height="200px" width="100%" alt="Header">
+        <button type="button" class="btn btn-outline-dark login-btn px-4" (click)="login()">Logind</button>
+    </div>
+</div>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
+  <a class="navbar-brand" [routerLinkActive]="['active']" [routerLink]="['/social/events']" >Genforeningen 2020</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+        <a class="nav-link" [routerLink]="['/social/events']" >Der Sker <span class="sr-only">(current)</span></a>
+      </li>
+      <!-- <li class="nav-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+        <a class="nav-link" [routerLink]="['/social/news']">News</a>
+      </li> -->
+      <li class="nav-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+        <a class="nav-link" [routerLink]="['/social/addevent']">Arrangement Ansøgning</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0" [formGroup]="subscriberForm" (ngSubmit)="addSubscriber()">
+      <input class="form-control mr-sm-2" type="email" placeholder="Email" formControlName="email" aria-label="Email" required>
+      <button class="btn btn-outline-light my-2 my-sm-0" type="submit" [disabled]="!subscriberForm.valid"><i class="fa fa-envelope" aria-hidden="true"></i> Tilmeld Nyhedersbrev</button>
+    </form>
+  </div>
+</nav>
+
+<div class="row mt-2 mb-2">
+  <div class="col-12">
+    <div *ngIf="showSuccessAlert" class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong>Success</strong> {{apiMsg}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div *ngIf="showErrorAlert" class="alert alert-error alert-dismissible fade show" role="alert">
+      <strong>Success</strong> {{apiMsg}}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+</div>
